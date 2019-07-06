@@ -1,0 +1,27 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.stattools import adfuller
+data = pd.read_excel('3c446.xlsx')
+print(np.isnan(data).any())  # 缺失值检验
+data.dropna(inplace=True)  # 删除缺失值
+print(data)
+start_time1 = data['time']
+fluence1 = data['flux']
+
+# 运⽤ADF⽅法检测时间序列平稳性(原假设为⾮平稳),若其p值可以拒绝原假设 即其为平稳时间序列
+def testStationarity(ts):
+    dftest = adfuller(ts)
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','pvalue','#Lags Used','Number of Observations Used'])
+    for key,value in dftest[4].items():
+        dfoutput['Critical Value (%s)'%key] = value
+        return dfoutput
+# 判断时间序列的平稳性
+def Finaltest(ts,tsname):
+    a=testStationarity(ts)
+    if a[1]<0.99:
+        print('Time Series %s is Stable， P-value=%a' %(tsname,a[1]))
+    elif a[1]>=0.99:
+        print('Time series %s is Unstable， p-value=%a' %(tsname,a[1]))
+        return
+Finaltest(fluence1,'flux')

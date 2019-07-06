@@ -1,0 +1,44 @@
+# 求序列的互相关函数（输出为相关系数数列） #这⾥要求ts1与ts2是⽤维度的时间序列(需要预先筛选同⼀时间段的两个源流量的数列值进⾏计算)
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+data=pd.read_excel('correlationothersfunction.xlsx')
+def correlationothersfunction(ts1,ts2):
+    if len(ts1)!=len(ts2):
+        print('Warning:Array Dimensions are not matching!!!Please checkyour data..')
+        exit()
+    k=0
+    tao=[]
+    for k in range(len(ts1)):
+        up=[]
+        down1=[]
+        down2=[]
+        miu1 = np.mean(ts1[k:])
+        miu2 = np.mean(ts2[k:])
+        t=0
+        for t in range(len(ts1)-k):
+            up=np.append(up,(ts1[t+k]-miu1)*(ts2[t+k]-miu2))
+            down1=np.append(down1,(ts1[t+k]-miu1)**2)
+            down2=np.append(down2,(ts2[t+k]-miu2)**2)
+        ch1=np.sum(up)
+        ch2=np.sum(down1)
+        ch3=np.sum(down2)
+        stao=ch1/np.sqrt(ch2*ch3)
+        tao=np.append(tao,stao)
+        k=k+1
+    return tao
+flux1=data['flux1']
+flux2=data['flux2']
+y=correlationothersfunction(flux1,flux2)#纵坐标数据
+x=np.arange(0,len(y),1)#横坐标数据
+fig = plt.figure(figsize=(16,8))#设置画布大小
+ax1 = fig.add_subplot(111)#将画布分割成1行1列，图像画在从左到右从上到下的第1块
+ax1.set_title('correlationothersfunction\nSample number=%a' %(len(y)))#散点图的标题
+plt.xlabel('τ')#X轴标签
+plt.ylabel('correlationothersfunction')#Y轴标签
+ax1.scatter(x, y, c = 'r',marker = '.',s=5)#以X轴Y轴数据集分别为x，y,开始画图，落点颜色为red，样式marker为.
+plt.axhline(0.0, color= 'black',ls="--", lw=2)#参考线设置
+plt.legend("c")#图例
+plt.show() #显示散点图
+
+

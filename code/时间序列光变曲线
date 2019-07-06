@@ -1,0 +1,17 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+data=pd.read_excel('CAT102.xlsx')
+print(np.isnan(data).any())#缺失值检验
+data.dropna(inplace=True)#删除缺失值
+print(data)
+start_time1=data['time']
+fluence1=data['flux']
+# *******做出3c446原始的光变曲线
+plt.figure(figsize=(16,8))
+plt.plot(start_time1,np.log10(fluence1),label='3c446',linewidth=0.2,color='blue',marker='o',markerfacecolor='green',markersize=3)
+plt.xlabel('time[day]')
+plt.ylabel('log10_fluence[erg s$^{-1}$ cm$^{-2}$]')
+plt.title('3c446 Light Curve Origin')
+plt.legend(loc='best')
+plt.show()

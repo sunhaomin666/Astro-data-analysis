@@ -1,0 +1,32 @@
+import numpy as np
+from statsmodels.tsa.stattools import adfuller
+import matplotlib.pyplot as plt
+import random
+import pandas as pd
+from scipy.stats import kstest
+from scipy.stats import ks_2samp
+# 读取两个源的原始流量数据
+c0102=pd.read_excel('3C446.xlsx')
+fluence1=c0102['flux']
+start_time1=c0102['time']
+c2807=pd.read_excel('CTA102.xlsx')
+fluence2=c2807['flux']
+start_time2=c2807['time']
+# z-score标准化处理⽅法,并⽣成新的数据
+def z_score(ts):
+    mean=np.mean(ts)
+    std=np.std(ts)
+    new=np.zeros_like(ts)
+    i=0
+    for i in range(len(ts)):
+        new[i]=(ts[i]-mean)/std
+        i=i+1
+    return new
+# 对两个源进⾏z-score标准化处理，并⽣成新的流量序列
+new0102fluence=z_score(fluence1)
+new2807fluence=z_score(fluence2)
+a=ks_2samp(new0102fluence,new2807fluence)
+if a[1]<=0.05:
+    print('After z-score standardization,4c+0102 and 4c+2807 are not in same distribution,pvalue=%a' %(a[1]))
+else:
+    print('After z-score standardization,4c+0102 and 4c+2807 are in same distribution,pvalue=%a' % (a[1]))

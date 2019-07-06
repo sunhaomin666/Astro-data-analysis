@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.stattools import adfuller
+data = pd.read_excel('3c446.xlsx')
+start_time1 = data['time']
+fluence1 = data['flux']
+# 绘制p-p和q-q图来检测两个源原始数据的正太性
+# 求累积分布的数据值,并画出p-p图：
+# 3c446:
+total_fluence=np.sum(fluence1)
+fluence1=fluence1[np.argsort(fluence1)]
+fluence1=np.array(fluence1)
+i=1
+for i in range(len(start_time1)):
+    fluence1[i]=fluence1[i]+fluence1[i-1]
+    i=i+1
+y1=fluence1
+y1=fluence1/total_fluence
+x1=start_time1-np.min(start_time1)
+x2=np.arange(0, len(start_time1), 1)
+y2=np.random.normal(0,1,len(start_time1))
+y2=np.abs(y2)
+total_normal=np.sum(y2)
+i=1
+for i in range(len(y2)):
+    y2[i]=y2[i]+y2[i-1]
+    i=i+1
+y2=y2/total_normal
+a=np.arange(0,1,0.01)
+b=np.arange(0,1,0.01)
+plt.plot(y2,y1)
+plt.title('p-p plot for 4C+0102')
+plt.xlabel('Theoritical normal Data')
+plt.ylabel('Observed Data')
+plt.plot(a,b,linewidth=2,color='r')
+plt.legend(labels=['Actual result','Perfect result'],loc='best')
+plt.show()
+# 求累积分布的数据值,并画出q-q图：
+# 3c446:
+total_fluence=np.sum(fluence1)
+fluence1=fluence1[np.argsort(fluence1)]
+fluence1=np.array(fluence1)
+i=1
+for i in range(len(start_time1)):
+    fluence1[i]=fluence1[i]+fluence1[i-1]
+    i=i+1
+y1=fluence1
+x1=start_time1-np.min(start_time1)
+x2=np.arange(0, len(start_time1), 1)
+y2=np.random.normal(0,1,len(start_time1))
+y2=np.abs(y2)
+total_normal=np.sum(y2)
+i=1
+for i in range(len(y2)):
+    y2[i]=y2[i]+y2[i-1]
+    i=i+1
+a=np.arange(0,np.max(y2),np.max(y2)/len(y2))
+b=np.arange(0,np.max(y1),np.max(y1)/len(y2))
+plt.plot(y2,y1)
+plt.title('q-q plot for 4C+0102')
+plt.xlabel('Theoritical random normal data')
+plt.ylabel('Observed fluence Data')
+plt.plot(a,b,linewidth=2,color='r')
+plt.legend(labels=['Actual result','Perfect result'],loc='best')
+plt.show()

@@ -1,0 +1,58 @@
+import numpy as np
+from statsmodels.tsa.stattools import adfuller
+import matplotlib.pyplot as plt
+import random
+import pandas as pd
+# 读取两个源的原始流量数据
+c0102=pd.read_excel('3C446.xlsx')
+fluence1=c0102['flux']
+start_time1=c0102['time']
+c2807=pd.read_excel('CTA102.xlsx')
+fluence2=c2807['flux']
+start_time2=c2807['time']
+f3=fluence2
+# 对两个源进⾏随机抽样 然后进⾏期望与⽅差估计 抽样标准为完备样本的⼀半
+mean1array=[]
+mean2array=[]
+var1array=[]
+var2array=[]
+k=50
+# 取随机操作数为k次，然后通过ADF⽅法检测序列的平稳性 从⽽来检验期望与⽅差
+for i in range(k):
+    random_fluence1=random.sample(list(fluence1),int(len(fluence1)/2))
+    random_fluence2=random.sample(list(fluence2),int(len(fluence2)/2))
+    estimted_mean1=np.mean(random_fluence1)
+    estimted_mean2=np.mean(random_fluence2)
+    estimted_var1=np.var(random_fluence1)
+    estimted_var2=np.var(random_fluence2)
+    mean1array=np.append(mean1array,estimted_mean1)#50个样本的均值数组
+    mean2array=np.append(mean2array,estimted_mean2)
+    var1array=np.append(var1array,estimted_var1)#50个样本的方差数组
+    var2array=np.append(var2array,estimted_var2)
+mean1=np.mean(mean1array)#3c446流量均值
+mean2=np.mean(mean2array)#CTA102流量均值
+var1=np.mean(var1array)#3c446流量方差
+var2=np.mean(var2array)#CTA102流量方差
+print(mean1,var1)
+print(mean2,var2)
+# 运⽤ADF⽅法检测时间序列平稳性(原假设为⾮平稳),若其p值可以拒绝原假设 即其为平稳时间序列
+def testStationarity(ts):
+    dftest = adfuller(ts)
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','pvalue','#Lags Used','Number of Observations Used'])
+    for key,value in dftest[4].items():
+        dfoutput['Critical Value (%s)'%key] = value
+        return dfoutput
+# 判断时间序列的平稳性
+def Finaltest(ts,tsname):
+    a=testStationarity(ts)
+    if a[1]<0.99:
+        print('Time Series %s is Stable， P-value=%a' %(tsname,a[1]))
+    elif a[1]>=0.99:
+        print('Time series %s is Unstable， p-value=%a' %(tsname,a[1]))
+        return
+Finaltest(mean1array,'mean1')
+Finaltest(mean2array,'mean2')
+Finaltest(var1array,'var1')
+Finaltest(var2array,'var2')
+
+
