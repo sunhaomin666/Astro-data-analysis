@@ -16,10 +16,10 @@ start_time2=c2807['time']
 kstest_0102=kstest(fluence1, 'norm')
 kstest_2807=kstest(fluence2,'norm')
 if kstest_0102[1]<=0.05:
-    print('4c+0102 is not normal distribution\npvalue=%a' %(kstest_0102[1]))
+    print('3c446 is not normal distribution\npvalue=%a' %(kstest_0102[1]))
 else:
-    print('4c+0102 is normal distribution\npvalue=%a' %(kstest_0102[1]))
+    print('3c446 is normal distribution\npvalue=%a' %(kstest_0102[1]))
 if kstest_2807[1]<=0.05:
-    print('4c+2807 is not normal distribution\npvalue=%a' %(kstest_2807[1]))
+    print('CTA102 is not normal distribution\npvalue=%a' %(kstest_2807[1]))
 else:
-    print('4c+2807 is normal distribution\npvalue=%a' %(kstest_2807[1]))
+    print('CTA102 is normal distribution\npvalue=%a' %(kstest_2807[1]))
