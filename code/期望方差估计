@@ -1,6 +1,4 @@
 import numpy as np
-from statsmodels.tsa.stattools import adfuller
-import matplotlib.pyplot as plt
 import random
 import pandas as pd
 # 读取两个源的原始流量数据
@@ -33,26 +31,7 @@ mean1=np.mean(mean1array)#3c446流量均值
 mean2=np.mean(mean2array)#CTA102流量均值
 var1=np.mean(var1array)#3c446流量方差
 var2=np.mean(var2array)#CTA102流量方差
-# print(mean1,var1)
-# print(mean2,var2)
-# 运⽤ADF⽅法检测时间序列平稳性(原假设为⾮平稳),若其p值可以拒绝原假设 即其为平稳时间序列
-def testStationarity(ts):
-    dftest = adfuller(ts)
-    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','pvalue','#Lags Used','Number of Observations Used'])
-    for key,value in dftest[4].items():
-        dfoutput['Critical Value (%s)'%key] = value
-        return dfoutput
-# 判断时间序列的平稳性
-def Finaltest(ts,tsname):
-    a=testStationarity(ts)
-    if a[1]<0.99:
-        print('{x} {y},{z} {q}'.format(x=tsname, y='is stable',z=' P-value=',q=a[1]))
-    elif a[1]>=0.99: # print('Time series %s is Unstable， p-value=%a' %(tsname,a[1]))
-        print('{x} {y},{z} {q}'.format(x=tsname, y='is nor stable', z=' P-value=', q=a[1]))
-        return
-Finaltest(mean1array,'3c446_mean')
-Finaltest(mean2array,'CTA102_mean2')
-Finaltest(var1array,'3c446_var1')
-Finaltest(var2array,'CTA102_var2')
-
-
+print('the mean of 3c446 is %a'%mean1,'and the var of 3c446 is %a'%var1)
+print('the mean of CTA102 is %a'%mean2,'and the var of CTA102 is %a'%var2)
+# print(var1array)
+# print(var2array)
